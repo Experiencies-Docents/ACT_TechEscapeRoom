@@ -1,0 +1,51 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+if [ "$#" -eq 1 ] && [[ "$1" != "-v" ]]; then
+	echo -e "${RED}Error en la instrucció${NC}: Opció $1 no reconeguda"
+	exit 1
+fi
+
+if [ "$#" -gt 1 ]; then
+	echo -e "${RED}Error en la instrucció${NC}: Massa opcions afegides"
+	exit 1
+fi
+
+## PRINT PROGRESS BAR
+count=0
+while [ $count -lt 5 ]; do
+	let count=$count+1
+	clear
+	echo "Establint connexió amb els servidors"
+	count2=0
+	while [ $count2 -lt $count ]; do
+		let count2=$count2+1
+		printf "."
+	done
+	sleep 0.5
+done
+echo ""
+
+if [ "$#" = 0 ]; then
+	echo -e "${RED}Els servidors s'han vist compromesos${NC}"
+	sleep 0.5
+	echo -e "Per conèixer més detalls usau 'serverStatus -v'"
+	sleep 0.5
+	exit 1
+fi
+
+if [ "$#" = 1 ] && [ "$1" = "-v" ]; then
+	nod=0
+	while [ $nod -lt 16 ]; do
+		let nod=$nod+1
+		if [ $nod = 9 ] || [ $nod = 11 ]; then
+			echo -e "Node nod$nod : ${RED}ERROR${NC}"
+		else
+			echo -e "Node nod$nod : ${GREEN}OK${NC}"
+		fi
+		sleep 0.25
+	done
+fi

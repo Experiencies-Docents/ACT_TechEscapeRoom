@@ -1,0 +1,38 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+if [ "$#" -ne 2 ]; then
+	echo -e "${RED}Error:${NC} nombre d'arguments erroni"
+	exit 1
+fi
+
+if [ "$1" != "-s" ]; then
+	echo -e "${RED}Error:${NC} Opció $1 no reconeguda"
+	exit 1
+fi
+
+## PRINT PROGRESS BAR
+count=0
+while [ $count -lt 6 ]; do
+	let count=$count+1
+	clear
+	echo "Establint connexió amb els servidors"
+	count2=0
+	while [ $count2 -lt $count ]; do
+		let count2=$count2+1
+		printf "."
+	done
+	sleep 0.5
+done
+echo ""
+
+if [ "$2" != "srv1" ] && [ "$2" != "srv2" ] && [ "$2" != "srv3" ] && [ "$2" != "srv4" ]; then
+	echo -e "${RED}Error:${NC} No s'ha trobat el servidor $2"
+	exit 1
+fi
+
+cat "/var/log/dcultural/$2.log" > "$2.log"
+echo -e "${GREEN}S'ha generat l'arxiu $2.log correctament${NC}"

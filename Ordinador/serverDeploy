@@ -1,0 +1,63 @@
+#!/bin/bash
+
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+NC='\033[0m'
+
+if [ "$#" -ne 4 ]; then
+	echo -e "${RED}ERROR:${NC}S'espera un servidor (-s) i un protocol (-p)"
+	exit 1
+fi
+
+#server="0"
+#protocol="0"
+
+while getopts :s:p: flag
+do
+    case "${flag}" in
+        s) server=${OPTARG};;
+        p) protocol=${OPTARG};;
+	*) echo -e "${RED}ERROR:${NC} Opció -${OPTARG} no reconeguda"; exit 1;;
+    esac
+done
+
+if [ $server != "srv1" ] && [ $server != "srv2" ] && [ $server != "srv3" ] && [ $server != "srv4" ]; then
+	echo -e "${RED}ERROR:${NC} Servidor $server no s'ha trobat"
+	exit 1
+fi
+
+if [ $protocol != "stepRight" ] && [ $protocol != "coreUp" ] && [ $protocol != "jumpDown" ] && [ $protocol != "dimoni" ]; then
+	echo -e "${RED}ERROR:${NC} Protocol $protocol desconegut"
+	exit 1
+fi
+
+## PRINT PROGRESS BAR
+count=0
+while [ $count -lt 5 ]; do
+	let count=$count+1
+	clear
+	echo "Desplegant servidor $server amb protocol $protocol"
+	count2=0
+	while [ $count2 -lt $count ]; do
+		let count2=$count2+1
+		printf "."
+	done
+	sleep 0.5
+done
+echo ""
+
+if [ $server = "srv3" ] && [ $protocol != "dimoni" ]; then
+	echo -e "${RED}ERROR:${NC} El servidor $server està bloquejat, es necessita el mateix protocol que es va usar per desbloquejar-lo i desplegar-lo amb èxit"
+	exit 1
+fi
+
+if [ $server = "srv3" ] && [ $protocol = "dimoni" ]; then
+	echo -e "El servidor srv3 s'ha reparat i està funcionant correctament"
+	sleep 1
+	echo -e "${GREEN}Enhorabona!${NC} Heu superat la prova"
+	sleep 1.5
+	xdg-open "/var/log/dcultural/complet.jpeg"
+else
+	echo -e "El servidor $server s'ha actualitzat amb el protocol $protocol"
+fi
+
